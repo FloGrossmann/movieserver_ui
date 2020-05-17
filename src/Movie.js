@@ -2,8 +2,6 @@ import React from "react"
 import Rating from "./Rating"
 import Person from "./Person"
 
-const HOST = "http://localhost:8080"
-
 class Movie extends React.Component {
     constructor(props) {
         super(props);
@@ -21,7 +19,7 @@ class Movie extends React.Component {
         }
 
         let ratings = null;
-        if (this.props.movie.ratings.length !== 0) {
+        if (this.props.movie.ratings && this.props.movie.ratings.length !== 0) {
             ratings = this.props.movie.ratings;
         }
         let ratingsRender = null;
@@ -30,14 +28,14 @@ class Movie extends React.Component {
             let ratingsList = [];
             for (let rating of ratings) {
                 i++;
-                ratingsList.push(<div className="list-group-item" key={"movie_rating_"+i}><Rating rating={rating}/></div>)
+                ratingsList.push(<div className="list-group-item" key={"movie_rating_"+i}><Rating rating={rating} getData={this.props.getData}/></div>)
             }
             ratingsRender = <div className="card"><div className="card-header">Bewertungen: </div><div className="card-body list-group list-group-flush">{ratingsList}</div></div>
         }
 
 
         let persons = null;
-        if (this.props.movie.watched_by.length !== 0) {
+        if (this.props.movie.watched_by && this.props.movie.watched_by.length !== 0) {
             persons = this.props.movie.watched_by;
         }
         
@@ -47,7 +45,7 @@ class Movie extends React.Component {
             let personsList = [];
             for (let person of persons) {
                 j++;
-                personsList.push(<div className="list-group-item" key={"movie_person_"+j}><Person person={person}/></div>)
+                personsList.push(<div className="list-group-item" key={"movie_person_"+j}><Person person={person} getData={this.props.getData}/></div>)
             }
             personsRender = <div className="card"><div className="card-header">Gesehen von: </div><div className="card-body list-group list-group-flush">{personsList}</div></div>
         }
@@ -89,10 +87,6 @@ class Movie extends React.Component {
             </div>
         );
     }
-}
-
-function getMoviesURL() {
-    return HOST + "/api/movies";
 }
 
 export default Movie;

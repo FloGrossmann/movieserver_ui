@@ -2,8 +2,6 @@ import React from "react"
 import Rating from "./Rating"
 import Movie from "./Movie"
 
-const HOST = "http://localhost:8080"
-
 class Person extends React.Component {
     constructor(props) {
         super(props);
@@ -28,7 +26,7 @@ class Person extends React.Component {
             let i = 0;
             for (let rating of ratings) {
                 i++;
-                ratingsList.push(<div className="card" key={"person_rating_"+i}><Rating rating={rating}/></div>)
+                ratingsList.push(<div className="card" key={"person_rating_"+i}><Rating rating={rating} getData={this.props.getData}/></div>)
             }
             ratingsRender = <span>Abgegebene Bewertungen: {ratingsList}</span>
         }
@@ -43,9 +41,31 @@ class Person extends React.Component {
             let j = 0;
             for (let movie of movies) {
                 j++;
-                moviesList.push(<div className="card" key={"person_movie_"+j}><Movie movie={movie}/></div>)
+                moviesList.push(<div className="card" key={"person_movie_"+j}><Movie movie={movie} getData={this.props.getData}/></div>)
             }
             moviesRender = <span>Gesehene Filme: {moviesList}</span>;
+        }
+
+        let linkButtons = [];
+
+        if (this.props.person.hasOwnProperty("_links")) {
+            //Collectionlinks
+            let collectionLinks = this.props.person._links;
+            for (let key in collectionLinks) {
+                let link = collectionLinks[key].href;
+                linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+            }
+        }
+        if (this.props.person.hasOwnProperty("links")) {
+            //Model links
+            let links = this.props.person.links;
+            let i = 0;
+            for (let linkObject of links) {
+                i++;
+                //Each model link has an object with 'rel' & 'href' keys
+                let link = linkObject.href;
+                linkButtons.push(<button className="btn btn-info" key={"link_"+i} onClick={() => this.props.getData(link)}>{linkObject.rel} - {link}</button>)
+            }
         }
 
         return (
@@ -55,13 +75,10 @@ class Person extends React.Component {
                 <span>Nachname: {this.props.person.lastName}</span>
                 <span>{moviesRender ? moviesRender : ""}</span>
                 <span>{ratingsRender ? ratingsRender : ""}</span>
+                <div>{linkButtons}</div>
             </div>
         );
     }
-}
-
-function getMoviesURL() {
-    return HOST + "/api/movies";
 }
 
 export default Person;

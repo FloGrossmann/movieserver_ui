@@ -2,8 +2,6 @@ import React from "react"
 import Movie from "./Movie";
 import Person from "./Person"
 
-const HOST = "http://localhost:8080"
-
 class Rating extends React.Component {
     constructor(props) {
         super(props);
@@ -16,12 +14,12 @@ class Rating extends React.Component {
 
         let movie = "";
         if (this.props.rating.movie) {
-            movie = <div className="card-header">Film: <Movie movie = {this.props.rating.movie}/></div>
+            movie = <div className="card-header">Film: <Movie movie = {this.props.rating.movie} getData={this.props.getData}/></div>
         }
 
         let person = "";
         if (this.props.rating.person) {
-            person = <div className="card-header">Person: <Person person = {this.props.rating.person}/></div>
+            person = <div className="card-header">Person: <Person person = {this.props.rating.person} getData={this.props.getData}/></div>
         }
 
         return (
@@ -36,10 +34,6 @@ class Rating extends React.Component {
             </div>
         );
     }
-}
-
-function getMoviesURL() {
-    return HOST + "/api/movies";
 }
 
 export default Rating;

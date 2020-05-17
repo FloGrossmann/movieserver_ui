@@ -1,89 +1,49 @@
 import React from "react"
-import Movie from "./Movie"
+import Person from "./Person"
 
-const HOST = "http://localhost:8080"
-
-class Movies extends React.Component {
+class Persons extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            movies: null,
-            movie: null
         }
         this.getData = this.getData.bind(this);
     }
 
     getData(link) {
-        console.log("Get data called with link: ", link)
-        if (!link || link === "") {
-            link = getMoviesURL();
-        } else {
-            //Sanitize
-            if (link.includes("{?title}")) {
-                link = link.replace("{?title}", "");
-            }
-        }
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = () => {
-            if(request.readyState === 4) {
-                if (request.status === 200) {
-                    let responseJSON = JSON.parse(request.responseText);
-                    console.log("Received response: ", responseJSON);
-                    if (responseJSON.hasOwnProperty("_embedded")) {
-                        // We are a movie list
-                        this.setState({movies: JSON.parse(request.responseText)._embedded.movies, movie: null});
-                    } else if (responseJSON.hasOwnProperty("movie")){
-                        this.setState({movie: JSON.parse(request.responseText).movie, movies: null});
-                    }
-                }
-            }
-        }
-        console.log(getMoviesURL());
-        request.open("GET", link, true);
-        request.send();
+        this.props.getData(link);
     }
 
     render() {
 
-        if (this.state.movies !== null) {
-            let movies = this.state.movies;
-            if (!movies) {
-                movies = [];
+        if (this.props.persons !== null) {
+            let persons = this.props.persons;
+            if (!persons) {
+                persons = [];
             }
-            let movieRender = [];
+            let personRender = [];
             let i = 0;
-            for (let movie of movies) {
+            for (let person of persons) {
                 i++;
-                movieRender.push(<div className="card-body" key={"movies_"+i}><Movie movie={movie} getData={this.getData}/></div>)
+                personRender.push(<div className="card-body" key={"persons_"+i}><Person person={person} getData={this.getData}/></div>)
             }
     
             return (
                 <div>
                     <div className="card">
-                        {movieRender}
+                        {personRender}
                     </div>
                 </div>
             );
-        } else if (this.state.movie !== null) {
+        } else if (this.props.person !== null) {
             return (
                 <div className="card">
                     <div className="card-body">
-                    <Movie movie = {this.state.movie} getData={this.getData}/>
+                    <Person person = {this.props.person} getData={this.getData}/>
                     </div>
-                </div>
-            );
-        } else {
-            return (
-                <div>
-                    <button className="btn btn-primary" onClick={() => this.getData()}> Alle Filme holen </button>
                 </div>
             );
         }
     }
 }
 
-function getMoviesURL() {
-    return HOST + "/api/movies";
-}
-
-export default Movies;
+export default Persons;

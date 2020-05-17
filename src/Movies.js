@@ -1,8 +1,6 @@
 import React from "react"
 import Movie from "./Movie"
 
-const HOST = "http://localhost:8080"
-
 class Movies extends React.Component {
     constructor(props) {
         super(props);
@@ -53,10 +51,6 @@ class Movies extends React.Component {
             );
         }
     }
-}
-
-function getMoviesURL() {
-    return HOST + "/api/movies";
 }
 
 export default Movies;

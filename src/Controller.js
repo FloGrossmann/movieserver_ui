@@ -1,6 +1,8 @@
 import React from "react"
 import Movie from "./Movie"
 import Movies from "./Movies";
+import Person from "./Person"
+import Persons from "./Persons";
 
 const HOST = "http://localhost:8080"
 
@@ -9,7 +11,9 @@ class Controller extends React.Component {
         super(props);
         this.state = {
             movies: null,
-            movie: null
+            movie: null,
+            persons: null,
+            person: null
         }
         this.getData = this.getData.bind(this);
     }
@@ -19,9 +23,12 @@ class Controller extends React.Component {
         if (!link || link === "") {
             link = getMoviesURL();
         } else {
-            //Sanitize
+            //Sanitize links from templating
             if (link.includes("{?title}")) {
                 link = link.replace("{?title}", "");
+            }
+            if (link.includes("{?firstname}")) {
+                link = link.replace("{?firstname}", "");
             }
         }
         var request = new XMLHttpRequest();
@@ -34,12 +41,18 @@ class Controller extends React.Component {
                         //We are a list
                         if (responseJSON._embedded.hasOwnProperty("movies")) {
                             // We are a movie list
-                            this.setState({movies: responseJSON._embedded.movies, movie: null});
+                            this.setState({movies: responseJSON._embedded.movies, movie: null, persons: null, person: null});
+                        } else if (responseJSON._embedded.hasOwnProperty("personModelList")) {
+                            // We are a person list
+                            this.setState({movies: null, movie: null, persons: responseJSON._embedded.personModelList, person: null});
                         }
 
                     } else if (responseJSON.hasOwnProperty("movie")){
                         // We are just a movie
-                        this.setState({movie: JSON.parse(request.responseText).movie, movies: null});
+                        this.setState({movie: responseJSON.movie, movies: null, persons: null, person: null});
+                    } else if (responseJSON.hasOwnProperty("person")){
+                        // We are just a person
+                        this.setState({movie: null, movies: null, persons: null, person: responseJSON.person});
                     }
                 }
             }
@@ -57,11 +70,15 @@ class Controller extends React.Component {
             );
         } else if (this.state.movie !== null) {
             return (
-                <div className="card">
-                    <div className="card-body">
-                    <Movie movie = {this.state.movie} getData={this.getData}/>
-                    </div>
-                </div>
+                <Movie movie = {this.state.movie} getData={this.getData}/>
+            );
+        } else if (this.state.persons !== null) {
+            return (
+                <Persons persons = {this.state.persons} getData={this.getData}/>
+            );
+        } else if (this.state.person !== null) {
+            return (
+                <Person person = {this.state.person} getData={this.getData}/>
             );
         } else {
             return (
