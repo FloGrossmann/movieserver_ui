@@ -15,7 +15,7 @@ class Ratings extends React.Component {
 
     render() {
 
-        if (this.props.ratingList._embedded.ratingModelList !== null) {
+        if (this.props.ratingList && this.props.ratingList._embedded.ratingModelList !== null) {
             let ratings = this.props.ratingList._embedded.ratingModelList;
             if (!ratings) {
                 ratings = [];

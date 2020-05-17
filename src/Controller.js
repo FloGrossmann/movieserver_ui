@@ -3,7 +3,8 @@ import Movies from "./Movies";
 import Persons from "./Persons";
 import Ratings from "./Ratings";
 
-const HOST = "http://localhost:8080"
+const HOST = "http://localhost:8080";
+const MAINURL = HOST +"/api";
 
 class Controller extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class Controller extends React.Component {
             person: null,
             ratings: null,
             rating: null,
-            links: null
+            links: null,
+            error: null
         }
         this.getData = this.getData.bind(this);
     }
@@ -27,7 +29,7 @@ class Controller extends React.Component {
     getData(link) {
         console.log("Get data called with link: ", link)
         if (!link || link === "") {
-            link = getAPIURL();
+            link = MAINURL;
         } else {
             //Sanitize links from templating
             if (link.includes("{?title}")) {
@@ -41,6 +43,7 @@ class Controller extends React.Component {
         request.onreadystatechange = () => {
             if(request.readyState === 4) {
                 if (request.status === 200) {
+                    this.setState({error: null});
                     let responseJSON = JSON.parse(request.responseText);
                     console.log("Received response: ", responseJSON);
                     if (responseJSON.hasOwnProperty("_embedded")) {
@@ -72,6 +75,9 @@ class Controller extends React.Component {
                             this.setState({movie: null, movies: null, persons: null, person: null, ratings: null, rating: null, links: responseJSON._links });
                         }
                     }
+                } else {
+                    console.error("Call to main url " + MAINURL + " was not successfull, retrieved answer: ", request)
+                    this.setState({movie: null, movies: null, persons: null, person: null, ratings: null, rating: null, links: null, error: request.errorText});
                 }
             }
         }
@@ -116,9 +122,24 @@ class Controller extends React.Component {
                 </div>
             );
         } else {
+
+            let fetchButton = "";
+            if (linkButtons.length === 0) {
+                //Some error has occured, show a retry button
+                fetchButton = <div>
+                    <h3>Is the movieserver running under {HOST} ?</h3>
+                    <p>The UI expects the movieserver to expose the API {MAINURL}.</p>
+                    <p> You can configure this URL in the Controller.js</p>
+                    <p><button className="btn btn-primary" onClick={() => this.getData()}> Retry get data </button></p>
+                </div>
+            }
+            let error = this.state.error;
+
             return (
                 <div className="card">
                     <h2 className="card-header">Root-Navigation</h2>
+                    {error}
+                    {fetchButton}
                     <div className="card-body">
                         {linkButtons}
                     </div>
@@ -126,10 +147,6 @@ class Controller extends React.Component {
             );
         }
     }
-}
-
-function getAPIURL() {
-    return HOST + "/api";
 }
 
 export default Controller;

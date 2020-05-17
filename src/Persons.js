@@ -15,7 +15,7 @@ class Persons extends React.Component {
 
     render() {
 
-        if (this.props.personList._embedded.personModelList !== null) {
+        if (this.props.personList && this.props.personList._embedded.personModelList !== null) {
             let persons = this.props.personList._embedded.personModelList;
             if (!persons) {
                 persons = [];

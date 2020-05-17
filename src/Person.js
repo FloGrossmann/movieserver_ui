@@ -17,7 +17,7 @@ class Person extends React.Component {
         }
 
         let ratings = null;
-        if (this.props.person.rating && this.props.person.rating.length !== 0) {
+        if (this.props.person.ratings && this.props.person.ratings.length !== 0) {
             ratings = this.props.person.ratings
         }
         let ratingsRender = null;
@@ -44,6 +44,21 @@ class Person extends React.Component {
                 moviesList.push(<div className="card" key={"person_movie_"+j}><Movie movie={movie} getData={this.props.getData}/></div>)
             }
             moviesRender = <span>Gesehene Filme: {moviesList}</span>;
+        }
+
+        let moviesNotWatched = null;
+        if (this.props.person.movies_notWatched && this.props.person.movies_notWatched.length !== 0) {
+            moviesNotWatched = this.props.person.movies_notWatched
+        }
+        let moviesNotWatchedRender = null;
+        if(moviesNotWatched) {
+            let moviesList = [];
+            let j = 0;
+            for (let movie of moviesNotWatched) {
+                j++;
+                moviesList.push(<div className="card" key={"person_movie_"+j}><Movie movie={movie} getData={this.props.getData}/></div>)
+            }
+            moviesNotWatchedRender = <span>Noch nicht gesehene Filme: {moviesList}</span>;
         }
 
         let linkButtons = [];
@@ -76,6 +91,7 @@ class Person extends React.Component {
                 <span>Nachname: {this.props.person.lastName}</span>
                 <span>{moviesRender ? moviesRender : ""}</span>
                 <span>{ratingsRender ? ratingsRender : ""}</span>
+                <span>{moviesNotWatchedRender ? moviesNotWatchedRender : ""}</span>
                 <div>{linkButtons}</div>
             </div>
         );

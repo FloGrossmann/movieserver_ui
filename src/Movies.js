@@ -16,7 +16,7 @@ class Movies extends React.Component {
 
     render() {
 
-        if (this.props.movieList._embedded.movies !== null) {
+        if (this.props.movieList && this.props.movieList._embedded.movies !== null) {
             let movies = this.props.movieList._embedded.movies;
             if (!movies) {
                 movies = [];
