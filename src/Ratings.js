@@ -15,8 +15,8 @@ class Ratings extends React.Component {
 
     render() {
 
-        if (this.props.ratings !== null) {
-            let ratings = this.props.ratings;
+        if (this.props.ratingList._embedded.ratingModelList !== null) {
+            let ratings = this.props.ratingList._embedded.ratingModelList;
             if (!ratings) {
                 ratings = [];
             }
@@ -26,11 +26,23 @@ class Ratings extends React.Component {
                 i++;
                 ratingsRender.push(<div className="card-body" key={"persons_"+i}><Rating rating={rating} getData={this.getData}/></div>)
             }
+
+            let linkButtons = [];
+
+            if (this.props.ratingList.hasOwnProperty("_links")) {
+                //Collectionlinks
+                let collectionLinks = this.props.ratingList._links;
+                for (let key in collectionLinks) {
+                    let link = collectionLinks[key].href;
+                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                }
+            }
     
             return (
                 <div>
                     <div className="card">
                         {ratingsRender}
+                        {linkButtons}
                     </div>
                 </div>
             );

@@ -15,8 +15,8 @@ class Persons extends React.Component {
 
     render() {
 
-        if (this.props.persons !== null) {
-            let persons = this.props.persons;
+        if (this.props.personList._embedded.personModelList !== null) {
+            let persons = this.props.personList._embedded.personModelList;
             if (!persons) {
                 persons = [];
             }
@@ -26,11 +26,24 @@ class Persons extends React.Component {
                 i++;
                 personRender.push(<div className="card-body" key={"persons_"+i}><Person person={person} getData={this.getData}/></div>)
             }
+
+            
+            let linkButtons = [];
+
+            if (this.props.personList.hasOwnProperty("_links")) {
+                //Collectionlinks
+                let collectionLinks = this.props.personList._links;
+                for (let key in collectionLinks) {
+                    let link = collectionLinks[key].href;
+                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                }
+            }
     
             return (
                 <div>
                     <div className="card">
                         {personRender}
+                        {linkButtons}
                     </div>
                 </div>
             );

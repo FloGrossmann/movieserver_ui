@@ -14,15 +14,20 @@ class Controller extends React.Component {
             persons: null,
             person: null,
             ratings: null,
-            rating: null
+            rating: null,
+            links: null
         }
         this.getData = this.getData.bind(this);
+    }
+
+    componentDidMount() {
+        this.getData();
     }
 
     getData(link) {
         console.log("Get data called with link: ", link)
         if (!link || link === "") {
-            link = getMoviesURL();
+            link = getAPIURL();
         } else {
             //Sanitize links from templating
             if (link.includes("{?title}")) {
@@ -42,13 +47,13 @@ class Controller extends React.Component {
                         //We are a list
                         if (responseJSON._embedded.hasOwnProperty("movies")) {
                             // We are a movie list
-                            this.setState({movies: responseJSON._embedded.movies, movie: null, persons: null, person: null});
+                            this.setState({movies: responseJSON, movie: null, persons: null, person: null});
                         } else if (responseJSON._embedded.hasOwnProperty("personModelList")) {
                             // We are a person list
-                            this.setState({movies: null, movie: null, persons: responseJSON._embedded.personModelList, person: null});
+                            this.setState({movies: null, movie: null, persons: responseJSON, person: null});
                         } else if (responseJSON._embedded.hasOwnProperty("ratingModelList")) {
                             // We are a rating list
-                            this.setState({movies: null, movie: null, persons: null, person: null, ratings: responseJSON._embedded.ratingModelList, rating: null});
+                            this.setState({movies: null, movie: null, persons: null, person: null, ratings: responseJSON, rating: null});
                         }
 
                     } else if (responseJSON.hasOwnProperty("movie")){
@@ -60,50 +65,71 @@ class Controller extends React.Component {
                     } else if (responseJSON.hasOwnProperty("rating")){
                         // We are just a rating
                         this.setState({movie: null, movies: null, persons: null, person: null, ratings: null, rating: responseJSON.rating});
+                    } else {
+                        // Root navigation
+                        if (responseJSON.hasOwnProperty("_links")) {
+                            //Root navigation!
+                            this.setState({movie: null, movies: null, persons: null, person: null, ratings: null, rating: null, links: responseJSON._links });
+                        }
                     }
                 }
             }
         }
-        console.log(getMoviesURL());
         request.open("GET", link, true);
         request.send();
     }
 
     render() {
 
+        let linkButtons = [];
+
+        if (this.state.links !== null) {
+            //Collectionlinks
+            let collectionLinks = this.state.links;
+            for (let key in collectionLinks) {
+                if (key !== "self") {
+                    let link = collectionLinks[key].href;
+                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.getData(link)}>{key} - {link}</button>)
+                }
+            }
+        }
+
         if (this.state.movies !== null || this.state.movie !== null) {
             return (
                 <div>
                     <h2>Filme</h2>
-                    <Movies movie = {this.state.movie} movies = {this.state.movies} getData={this.getData}/>
+                    <Movies movie = {this.state.movie} movieList = {this.state.movies} getData={this.getData}/>
                 </div>
             );
         } else if (this.state.persons !== null || this.state.person !== null) {
             return (
                 <div>
                     <h2>Personen</h2>
-                    <Persons persons = {this.state.persons} person = {this.state.person} getData={this.getData}/>
+                    <Persons personList = {this.state.persons} person = {this.state.person} getData={this.getData}/>
                 </div>
             );
         } else if (this.state.ratings !== null || this.state.rating !== null) {
             return (
                 <div>
                     <h2>Bewertungen</h2>
-                    <Ratings ratings = {this.state.ratings} rating={this.state.rating} getData={this.getData}/>
+                    <Ratings ratingList = {this.state.ratings} rating={this.state.rating} getData={this.getData}/>
                 </div>
             );
         } else {
             return (
-                <div>
-                    <button className="btn btn-primary" onClick={() => this.getData()}> Alle Filme holen </button>
+                <div className="card">
+                    <h2 className="card-header">Root-Navigation</h2>
+                    <div className="card-body">
+                        {linkButtons}
+                    </div>
                 </div>
             );
         }
     }
 }
 
-function getMoviesURL() {
-    return HOST + "/api/movies";
+function getAPIURL() {
+    return HOST + "/api";
 }
 
 export default Controller;

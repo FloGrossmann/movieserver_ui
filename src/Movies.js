@@ -16,8 +16,8 @@ class Movies extends React.Component {
 
     render() {
 
-        if (this.props.movies !== null) {
-            let movies = this.props.movies;
+        if (this.props.movieList._embedded.movies !== null) {
+            let movies = this.props.movieList._embedded.movies;
             if (!movies) {
                 movies = [];
             }
@@ -27,11 +27,23 @@ class Movies extends React.Component {
                 i++;
                 movieRender.push(<div className="card-body" key={"movies_"+i}><Movie movie={movie} getData={this.getData}/></div>)
             }
+
+            let linkButtons = [];
+
+            if (this.props.movieList.hasOwnProperty("_links")) {
+                //Collectionlinks
+                let collectionLinks = this.props.movieList._links;
+                for (let key in collectionLinks) {
+                    let link = collectionLinks[key].href;
+                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                }
+            }
     
             return (
                 <div>
                     <div className="card">
                         {movieRender}
+                        {linkButtons}
                     </div>
                 </div>
             );
@@ -41,12 +53,6 @@ class Movies extends React.Component {
                     <div className="card-body">
                     <Movie movie = {this.props.movie} getData={this.getData}/>
                     </div>
-                </div>
-            );
-        } else {
-            return (
-                <div>
-                    <button className="btn btn-primary" onClick={() => this.props.getData()}> Alle Filme holen </button>
                 </div>
             );
         }

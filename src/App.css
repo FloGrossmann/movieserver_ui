@@ -12,6 +12,10 @@
   margin: 10px;
 }
 
+.btn {
+  margin: 2px;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
