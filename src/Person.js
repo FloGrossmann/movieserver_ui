@@ -70,6 +70,7 @@ class Person extends React.Component {
 
         return (
             <div className="card">
+                <div className="card-header">Person</div>
                 <span>Id: {this.props.person.id}</span>
                 <span>Vorname: {this.props.person.firstName}</span>
                 <span>Nachname: {this.props.person.lastName}</span>

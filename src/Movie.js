@@ -30,7 +30,7 @@ class Movie extends React.Component {
                 i++;
                 ratingsList.push(<div className="list-group-item" key={"movie_rating_"+i}><Rating rating={rating} getData={this.props.getData}/></div>)
             }
-            ratingsRender = <div className="card"><div className="card-header">Bewertungen: </div><div className="card-body list-group list-group-flush">{ratingsList}</div></div>
+            ratingsRender = <div className="card"><div className="card">Bewertungen: <div className="card-body list-group list-group-flush">{ratingsList}</div></div></div>
         }
 
 
@@ -47,7 +47,7 @@ class Movie extends React.Component {
                 j++;
                 personsList.push(<div className="list-group-item" key={"movie_person_"+j}><Person person={person} getData={this.props.getData}/></div>)
             }
-            personsRender = <div className="card"><div className="card-header">Gesehen von: </div><div className="card-body list-group list-group-flush">{personsList}</div></div>
+            personsRender = <div className="card"><div className="card">Gesehen von: <div className="card-body list-group list-group-flush">{personsList}</div></div></div>
         }
 
         let linkButtons = [];
