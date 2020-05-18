@@ -34,7 +34,12 @@ class Ratings extends React.Component {
                 let collectionLinks = this.props.ratingList._links;
                 for (let key in collectionLinks) {
                     let link = collectionLinks[key].href;
-                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                    if (key === "POST") {
+                        //Disable POST-Buttons
+                        linkButtons.push(<button disabled className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                    } else {
+                        linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                    }
                 }
             }
     

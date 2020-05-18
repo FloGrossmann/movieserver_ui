@@ -142,6 +142,7 @@ class Controller extends React.Component {
                     {fetchButton}
                     <div className="card-body">
                         {linkButtons}
+                        <p>Notice this webapplication can currently only call GET-APIs. POST, PUT, DELETE Buttons are therefore disabled, but shown anyway.</p>
                     </div>
                 </div>
             );

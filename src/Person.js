@@ -68,7 +68,12 @@ class Person extends React.Component {
             let collectionLinks = this.props.person._links;
             for (let key in collectionLinks) {
                 let link = collectionLinks[key].href;
-                linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                if (key === "DELETE" || key === "PUT") {
+                    //Disable DELETE & PUT -Buttons
+                    linkButtons.push(<button disabled className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                } else {
+                    linkButtons.push(<button className="btn btn-info" key={key} onClick={() => this.props.getData(link)}>{key} - {link}</button>)
+                }
             }
         }
         if (this.props.person.hasOwnProperty("links")) {
@@ -79,7 +84,12 @@ class Person extends React.Component {
                 i++;
                 //Each model link has an object with 'rel' & 'href' keys
                 let link = linkObject.href;
-                linkButtons.push(<button className="btn btn-info" key={"link_"+i} onClick={() => this.props.getData(link)}>{linkObject.rel} - {link}</button>)
+                if (linkObject.rel === "DELETE" || linkObject.rel ===  "PUT") {
+                    //Disable DELETE & PUT -Buttons
+                    linkButtons.push(<button disabled className="btn btn-info" key={"link_"+i} onClick={() => this.props.getData(link)}>{linkObject.rel} - {link}</button>)
+                } else {
+                    linkButtons.push(<button className="btn btn-info" key={"link_"+i} onClick={() => this.props.getData(link)}>{linkObject.rel} - {link}</button>)
+                }
             }
         }
 
